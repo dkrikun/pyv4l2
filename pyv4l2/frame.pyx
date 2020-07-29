@@ -20,7 +20,7 @@ cdef class Frame:
 
     cdef timeval tv
 
-    def __cinit__(self, device_path):
+    def __cinit__(self, device_path, width=-1, height=-1, pix_fmt=-1):
         device_path = device_path.encode()
 
         self.fd = v4l2_open(device_path, O_RDWR)
@@ -29,6 +29,11 @@ cdef class Frame:
 
         memset(&self.fmt, 0, sizeof(self.fmt))
         self.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE
+        if pix_fmt > -1:
+            self.fmt.fmt.pix.pixelformat = pix_fmt
+        if width > 0 and height > 0:
+            self.fmt.fmt.pix.width = width
+            self.fmt.fmt.pix.height = height
 
         if -1 == xioctl(self.fd, VIDIOC_G_FMT, &self.fmt):
             raise CameraError('Getting format failed')
