@@ -1,4 +1,3 @@
-#cython: language_level=3
 from libc.errno cimport errno, EINTR
 
 cdef extern from 'linux/videodev2.h':
@@ -10,7 +9,7 @@ cdef extern from 'linux/videodev2.h':
     ctypedef signed int              __s32
     ctypedef unsigned long long int  __u64
     ctypedef signed long long int    __s64
- 
+    
     enum: VIDIOC_G_FMT
     enum: VIDIOC_S_FMT
     enum: VIDIOC_REQBUFS
@@ -114,7 +113,6 @@ cdef extern from 'linux/videodev2.h':
     enum: V4L2_PIX_FMT_Y12
     enum: V4L2_PIX_FMT_Y16
     enum: V4L2_PIX_FMT_Y16_BE
-
 
     cdef struct v4l2_pix_format:
         __u32   width

@@ -1,4 +1,3 @@
-#cython: language_level=3
 from v4l2 cimport *
 from libc.errno cimport errno, EINTR, EINVAL
 from libc.string cimport memset, memcpy, strerror
@@ -36,12 +35,13 @@ cdef class Frame:
             self.fmt.fmt.pix.width = width
             self.fmt.fmt.pix.height = height
 
-
         if -1 == xioctl(self.fd, VIDIOC_G_FMT, &self.fmt):
             raise CameraError('Getting format failed')
 
         if -1 == xioctl(self.fd, VIDIOC_S_FMT, &self.fmt):
             raise CameraError('Setting format failed')
+
+
 
         memset(&self.buf_req, 0, sizeof(self.buf_req))
         self.buf_req.count = 4
@@ -92,6 +92,8 @@ cdef class Frame:
         return 0
 
     cpdef bytes get_frame(self, timeout=-1):
+        FD_ZERO(&self.fds)
+        FD_SET(self.fd, &self.fds)
 
         if timeout < 0:
             FD_ZERO(&self.fds)
@@ -125,7 +127,7 @@ cdef class Frame:
 
         if -1 == xioctl(self.fd, VIDIOC_DQBUF, &self.buf):
             raise CameraError('Retrieving frame failed')
-
+        
         buf =  self.buffers[self.buf.index].start
         buf_len = self.buf.bytesused
 
