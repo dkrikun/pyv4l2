@@ -1,3 +1,4 @@
+#cython: language_level=3
 from v4l2 cimport *
 from libc.errno cimport errno, EINVAL
 from libc.string cimport memset
