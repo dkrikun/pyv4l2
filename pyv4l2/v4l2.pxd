@@ -72,7 +72,42 @@ cdef extern from 'linux/videodev2.h':
     enum: V4L2_CID_COLOR_KILLER
     enum: V4L2_CID_COLORFX
 
-    # TODO add all formats
+    enum: V4L2_PIX_FMT_RGB332
+    enum: V4L2_PIX_FMT_RGB444
+    enum: V4L2_PIX_FMT_ARGB44
+    enum: V4L2_PIX_FMT_XRGB44
+    enum: V4L2_PIX_FMT_RGBA44
+    enum: V4L2_PIX_FMT_RGBX44
+    enum: V4L2_PIX_FMT_ABGR44
+    enum: V4L2_PIX_FMT_XBGR44
+    enum: V4L2_PIX_FMT_BGRA44
+    enum: V4L2_PIX_FMT_BGRX44
+    enum: V4L2_PIX_FMT_RGB555
+    enum: V4L2_PIX_FMT_ARGB55
+    enum: V4L2_PIX_FMT_XRGB55
+    enum: V4L2_PIX_FMT_RGBA55
+    enum: V4L2_PIX_FMT_RGBX55
+    enum: V4L2_PIX_FMT_ABGR55
+    enum: V4L2_PIX_FMT_XBGR55
+    enum: V4L2_PIX_FMT_BGRA55
+    enum: V4L2_PIX_FMT_BGRX55
+    enum: V4L2_PIX_FMT_RGB565
+    enum: V4L2_PIX_FMT_RGB555
+    enum: V4L2_PIX_FMT_ARGB555
+    enum: V4L2_PIX_FMT_XRGB555
+    enum: V4L2_PIX_FMT_RGB565
+    enum: V4L2_PIX_FMT_BGR666
+    enum: V4L2_PIX_FMT_BGR24
+    enum: V4L2_PIX_FMT_BGR32
+    enum: V4L2_PIX_FMT_ABGR32
+    enum: V4L2_PIX_FMT_XBGR32
+    enum: V4L2_PIX_FMT_BGRA32
+    enum: V4L2_PIX_FMT_BGRX32
+    enum: V4L2_PIX_FMT_RGB32
+    enum: V4L2_PIX_FMT_RGBA32
+    enum: V4L2_PIX_FMT_RGBX32
+    enum: V4L2_PIX_FMT_ARGB32
+    enum: V4L2_PIX_FMT_XRGB32
     enum: V4L2_PIX_FMT_GREY
     enum: V4L2_PIX_FMT_Y4
     enum: V4L2_PIX_FMT_Y6
