@@ -72,6 +72,14 @@ cdef extern from 'linux/videodev2.h':
     enum: V4L2_CID_COLOR_KILLER 
     enum: V4L2_CID_COLORFX
 
+    # TODO add all formats
+    enum: V4L2_PIX_FMT_GREY
+    enum: V4L2_PIX_FMT_Y4
+    enum: V4L2_PIX_FMT_Y6
+    enum: V4L2_PIX_FMT_Y12
+    enum: V4L2_PIX_FMT_Y16
+    enum: V4L2_PIX_FMT_Y16_BE
+
     cdef struct v4l2_pix_format:
         __u32   width
         __u32   height
