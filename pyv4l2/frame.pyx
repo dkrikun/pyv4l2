@@ -91,20 +91,30 @@ cdef class Frame:
 
         return 0
 
-    cpdef bytes get_frame(self):
-        FD_ZERO(&self.fds)
-        FD_SET(self.fd, &self.fds)
+    cpdef bytes get_frame(self, timeout=-1):
 
-        self.tv.tv_sec = 2
-
-        r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
-        while -1 == r and errno == EINTR:
+        if timeout < 0:
             FD_ZERO(&self.fds)
             FD_SET(self.fd, &self.fds)
 
-            self.tv.tv_sec = 2
-
+            # why use timeout at all?
+            timeout = 2
+            self.tv.tv_sec = timeout
             r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
+            while -1 == r and errno == EINTR:
+                FD_ZERO(&self.fds)
+                FD_SET(self.fd, &self.fds)
+
+                self.tv.tv_sec = timeout
+                r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
+        else:
+            FD_ZERO(&self.fds)
+            FD_SET(self.fd, &self.fds)
+
+            self.tv.tv_sec = timeout
+            r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
+            if r == -1 and errno == EINTR:
+                return None
 
         if -1 == r:
             raise CameraError('Waiting for frame failed')
