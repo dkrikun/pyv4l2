@@ -25,7 +25,6 @@ cdef extern from 'linux/videodev2.h':
     enum: V4L2_CID_BASE
     enum: V4L2_CID_LASTP1
     enum: V4L2_CID_PRIVATE_BASE
-    enum: V4L2_CTRL_FLAG_DISABLED
 
     enum: V4L2_CTRL_CLASS_USER
     enum: V4L2_CTRL_CLASS_MPEG
