@@ -68,7 +68,7 @@ cdef extern from 'linux/videodev2.h':
     enum: V4L2_CID_SHARPNESS
     enum: V4L2_CID_BACKLIGHT_COMPENSATION
     enum: V4L2_CID_CHROMA_AGC
-    enum: V4L2_CID_COLOR_KILLER 
+    enum: V4L2_CID_COLOR_KILLER
     enum: V4L2_CID_COLORFX
 
     # TODO add all formats
@@ -100,7 +100,6 @@ cdef extern from 'linux/videodev2.h':
     cdef struct v4l2_format:
         __u32 type
         __v4l2_format_fmt fmt
-            
 
     cdef struct v4l2_requestbuffers:
         __u32 count
