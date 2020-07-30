@@ -29,18 +29,19 @@ cdef class Frame:
 
         memset(&self.fmt, 0, sizeof(self.fmt))
         self.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE
+
+        if -1 == xioctl(self.fd, VIDIOC_G_FMT, &self.fmt):
+            raise CameraError('Getting format failed')
+
+        self.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE
         if pix_fmt > -1:
             self.fmt.fmt.pix.pixelformat = pix_fmt
         if width > 0 and height > 0:
             self.fmt.fmt.pix.width = width
             self.fmt.fmt.pix.height = height
 
-        if -1 == xioctl(self.fd, VIDIOC_G_FMT, &self.fmt):
-            raise CameraError('Getting format failed')
-
         if -1 == xioctl(self.fd, VIDIOC_S_FMT, &self.fmt):
             raise CameraError('Setting format failed')
-
 
 
         memset(&self.buf_req, 0, sizeof(self.buf_req))
