@@ -1,5 +1,5 @@
 from v4l2 cimport *
-from libc.errno cimport errno, EINTR, EINVAL
+from libc.errno cimport errno, EINTR, EINVAL, EAGAIN
 from libc.string cimport memset, memcpy, strerror
 from libc.stdlib cimport malloc, calloc, free
 from posix.select cimport fd_set, timeval, FD_ZERO, FD_SET, select
@@ -95,41 +95,28 @@ cdef class Frame:
         return 0
 
     cpdef bytes get_frame(self, timeout=-1):
+
         FD_ZERO(&self.fds)
         FD_SET(self.fd, &self.fds)
 
-        if timeout < 0:
-            FD_ZERO(&self.fds)
-            FD_SET(self.fd, &self.fds)
-
-            # why use timeout at all?
-            timeout = 2
-            self.tv.tv_sec = timeout
-            r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
-            while -1 == r and errno == EINTR:
-                FD_ZERO(&self.fds)
-                FD_SET(self.fd, &self.fds)
-
-                self.tv.tv_sec = timeout
-                r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
-        else:
-            FD_ZERO(&self.fds)
-            FD_SET(self.fd, &self.fds)
-
-            self.tv.tv_sec = timeout
-            r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
-            if r == -1 and errno == EINTR:
-                return None
+        self.tv.tv_sec = 0
+        self.tv.tv_usec = 0
+        r = select(self.fd + 1, &self.fds, NULL, NULL, &self.tv)
+        if r == -1 and errno == EAGAIN:
+            return None
 
         if -1 == r:
-            raise CameraError('Waiting for frame failed')
+            raise CameraError('Waiting for frame failed {}'.format(errno))
 
         memset(&self.buf, 0, sizeof(self.buf))
         self.buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE
         self.buf.memory = V4L2_MEMORY_MMAP
 
         if -1 == xioctl(self.fd, VIDIOC_DQBUF, &self.buf):
-            raise CameraError('Retrieving frame failed')
+            if errno == EAGAIN:
+                return None
+
+            raise CameraError('Retrieving frame failed {}'.format(errno))
         
         buf =  self.buffers[self.buf.index].start
         buf_len = self.buf.bytesused
