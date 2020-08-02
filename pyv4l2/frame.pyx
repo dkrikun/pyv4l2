@@ -3,7 +3,7 @@ from libc.errno cimport errno, EINTR, EINVAL
 from libc.string cimport memset, memcpy, strerror
 from libc.stdlib cimport malloc, calloc, free
 from posix.select cimport fd_set, timeval, FD_ZERO, FD_SET, select
-from posix.fcntl cimport O_RDWR
+from posix.fcntl cimport O_RDWR, O_NONBLOCK
 from posix.mman cimport PROT_READ, PROT_WRITE, MAP_SHARED
 
 from .exceptions import CameraError
@@ -20,10 +20,12 @@ cdef class Frame:
 
     cdef timeval tv
 
-    def __cinit__(self, device_path, width=-1, height=-1, pix_fmt=-1):
+    def __cinit__(self, device_path, width=-1, height=-1, pix_fmt=-1,
+            noblock=False):
         device_path = device_path.encode()
 
-        self.fd = v4l2_open(device_path, O_RDWR)
+        flags = (O_RDWR | O_NONBLOCK) if noblock else O_RDWR
+        self.fd = v4l2_open(device_path, flags)
         if -1 == self.fd:
             raise CameraError('Error opening device {}'.format(device_path))
 
